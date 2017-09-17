@@ -7,8 +7,8 @@ This script can auto download pictures from bilibili liveRoom presents，error m
 <br>
 
 ## Requirements | 系统需求
-Basic commands : sed，wget，jq，echo <br>
-基本命令 ：sed，wget，jq，echo
+Basic commands : sed,wget,jq,echo,iconv <br>
+基本命令 ：sed，wget，jq，echo，iconv
 <br>
 
 ## END | 结语
