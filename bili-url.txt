@@ -1,0 +1,9 @@
+﻿哔哩哔哩mainPageGIF资源列表：
+https://www.bilibili.com/index/index-icon.json
+
+漫画：
+http://activity.hdslb.com/zzjs/cartoon/errorPage-manga-1.png
+
+直播区礼物：
+http://static.hdslb.com/live-static/live-room/images/gift-section/gift-1.png
+http://static.hdslb.com/live-static/live-room/images/gift-section/gift-1.gif
