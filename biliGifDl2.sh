@@ -28,8 +28,6 @@ get_main_gif()
     
     # loop for download
     while true ; do
-    
-        ((i++))
         
         #jq command
         NCOMAND='jq '.fix[$i].title''
@@ -45,6 +43,7 @@ get_main_gif()
             break
         fi
         
+        ((i++))
         # sleep is required due to unknown problems
         sleep 0.1
     # Finish
