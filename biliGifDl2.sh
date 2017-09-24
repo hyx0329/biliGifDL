@@ -20,34 +20,55 @@ get_main_gif()
     
     
     # input list
-    wget -O index-icon.json https://www.bilibili.com/index/index-icon.json
+    echo
+    echo "Downloading List"
+    echo
     
-    # processing list
-    i=0
-    NAME=0
+    wget -O index-icon.json --append-output info.log https://www.bilibili.com/index/index-icon.json
     
+
     # loop for download
-    while true ; do
+    for (( i=0 ; ; i++ )); do
         
         #jq command
         NCOMAND='jq '.fix[$i].title''
         ACOMAND='jq '.fix[$i].icon''
+        UCOMAND='jq '.fix[$i].links''
+        
         NAME=`cat index-icon.json | $NCOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' | sed 's/\ /\_/g' `
         ADDR=`cat index-icon.json | $ACOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' `
+        URLS=`cat index-icon.json | $UCOMAND | sed 's/\"//g' `
+        
         ORIGIN=${ADDR##*/}
+        
+        
         
         # Ban "null"
         if [ "$NAME" != "null" ]; then
-            wget -O $NAME-$ORIGIN http:$ADDR
+            
+            # Create a gif-url list
+            echo $NAME-$ORIGIN >> list.txt
+            echo $URLS >> list.txt
+            echo >> list.txt
+            # Output
+            echo $NAME-$ORIGIN
+            echo $URLS
+            echo 
+            
+            wget -O $NAME-$ORIGIN --append-output info.log http:$ADDR
         else
             break
         fi
-        
-        ((i++))
+
         # sleep is required due to unknown problems
         sleep 0.1
     # Finish
     done
+
+# Remove log
+rm index-icon.json
+rm info.log
+
 cd ..
 }
 
