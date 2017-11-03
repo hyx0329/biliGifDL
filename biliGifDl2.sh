@@ -5,7 +5,8 @@
 ##  E-mail:hyx0329@163.com  ##
 ##############################
 
-
+set -e
+DATE=$(date +%Y%m%d)
 
 get_main_gif()
 {
@@ -13,10 +14,10 @@ get_main_gif()
     # The code is not so pretty though
     # Any improvements are welcome
     
-    if test ! -d mainPageGif; then
-        mkdir mainPageGif
+    if test ! -d mainPageGif-$DATE; then
+        mkdir mainPageGif-$DATE
     fi
-    cd mainPageGif
+    cd mainPageGif-$DATE
     
     
     # input list
@@ -24,7 +25,7 @@ get_main_gif()
     echo "Downloading List"
     echo
     
-    wget -O index-icon.json --append-output info.log https://www.bilibili.com/index/index-icon.json
+    wget -O index-icon-$DATE.json --append-output info.log https://www.bilibili.com/index/index-icon.json
     
 
     # loop for download
@@ -35,9 +36,9 @@ get_main_gif()
         ACOMAND='jq '.fix[$i].icon''
         UCOMAND='jq '.fix[$i].links''
         
-        NAME=`cat index-icon.json | $NCOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' | sed 's/\ /\_/g' `
-        ADDR=`cat index-icon.json | $ACOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' `
-        URLS=`cat index-icon.json | $UCOMAND | sed 's/\"//g' `
+        NAME=`cat index-icon-$DATE.json | $NCOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' | sed 's/\ /\_/g' `
+        ADDR=`cat index-icon-$DATE.json | $ACOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' `
+        URLS=`cat index-icon-$DATE.json | $UCOMAND | sed 's/\"//g' `
         
         ORIGIN=${ADDR##*/}
         
@@ -47,9 +48,9 @@ get_main_gif()
         if [ "$NAME" != "null" ]; then
             
             # Create a gif-url list
-            echo $NAME-$ORIGIN >> list.txt
-            echo $URLS >> list.txt
-            echo >> list.txt
+            echo $NAME-$ORIGIN >> list$DATE.txt
+            echo $URLS >> list$DATE.txt
+            echo >> list$DATE.txt
             # Output
             echo $NAME-$ORIGIN
             echo $URLS
@@ -66,7 +67,7 @@ get_main_gif()
     done
 
 # Remove log
-rm index-icon.json
+#rm index-icon.json
 rm info.log
 
 cd ..
