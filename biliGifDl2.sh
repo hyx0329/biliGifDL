@@ -5,14 +5,15 @@
 ##  E-mail:hyx0329@163.com  ##
 ##############################
 
-set -e
+## NEVER use "set -e" !!! | unknown issue
+# set -x
 DATE=$(date +%Y%m%d)
 
 get_main_gif()
 {
     
     # The code is not so pretty though
-    # Any improvements are welcome
+    # Any improvement is welcome
     
     if test ! -d mainPageGif-$DATE; then
         mkdir mainPageGif-$DATE
@@ -36,8 +37,9 @@ get_main_gif()
         ACOMAND='jq '.fix[$i].icon''
         UCOMAND='jq '.fix[$i].links''
         
-        NAME=`cat index-icon-$DATE.json | $NCOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' | sed 's/\ /\_/g' `
-        ADDR=`cat index-icon-$DATE.json | $ACOMAND | iconv -f utf8 -t utf8 | sed 's/\"//g' `
+		# Well, some gifs have no title($NAME), it's bilibili's problem, to be fixed
+        NAME=`cat index-icon-$DATE.json | $NCOMAND | iconv -f utf-8 -t utf-8 | sed 's/\"//g' | sed 's/\ /\_/g' `
+        ADDR=`cat index-icon-$DATE.json | $ACOMAND | iconv -f utf-8 -t utf-8 | sed 's/\"//g' `
         URLS=`cat index-icon-$DATE.json | $UCOMAND | sed 's/\"//g' `
         
         ORIGIN=${ADDR##*/}
@@ -92,12 +94,12 @@ done
 cd ..
 }
 
-get_errorpage_manga()
+get_404_manga()
 {
-if test ! -d errorManga; then
-        mkdir errorManga
+if test ! -d 404-manga; then
+        mkdir 404-manga
     fi
-cd errorManga
+cd 404-manga
 i=0
 while [ $? -eq 0 ] ; do
     ((i++))
@@ -107,8 +109,14 @@ done
 cd ..
 }
 
-get_main_gif
+merge_existing()
+{
+# Wait for improvement
+echo "Not functional yet!"
+}
+
+#get_main_gif
 #get_live_presents
-#get_errorpage_manga
+#get_404_manga
 
 exit 0
