@@ -5,7 +5,7 @@
 ##  E-mail:hyx0329@163.com  ##
 ##############################
 
-## NEVER use "set -e" !!! | unknown issue
+## NEVER use "set -e" !!! | we need wget's return value to decide what to do
 # set -x
 DATE=$(date +%Y%m%d)
 
@@ -38,10 +38,15 @@ get_main_gif()
         UCOMAND='jq '.fix[$i].links''
         
 		# Well, some gifs have no title($NAME), it's bilibili's problem, to be fixed
-        NAME=`cat index-icon-$DATE.json | $NCOMAND | iconv -f utf-8 -t utf-8 | sed 's/\"//g' | sed 's/\ /\_/g' `
+        NAME=`cat index-icon-$DATE.json | $NCOMAND | iconv -f utf-8 -t utf-8 | sed 's/\ /\_/g' | sed 's/\"//g' `
         ADDR=`cat index-icon-$DATE.json | $ACOMAND | iconv -f utf-8 -t utf-8 | sed 's/\"//g' `
         URLS=`cat index-icon-$DATE.json | $UCOMAND | sed 's/\"//g' `
         
+		# The solution to the missing name mentioned above
+		if [ ! "$NAME" ]; then
+			NAME=`echo ${URLS##*=} | sed 's/\ \]//g' | sed 's/%20/\_/g' `
+		fi
+		
         ORIGIN=${ADDR##*/}
         
         
@@ -58,7 +63,7 @@ get_main_gif()
             echo $URLS
             echo 
             
-            wget -O $NAME-$ORIGIN --append-output info.log http:$ADDR
+            wget -O $NAME-$ORIGIN --append-output info.log http:$ADDR &
         else
             break
         fi
@@ -86,9 +91,9 @@ i=0
 while [ $? -eq 0 ] ; do
     ((i++))
     sleep 0.1
-    wget "http://static.hdslb.com/live-static/live-room/images/gift-section/gift-$i.png"
+    wget "http://static.hdslb.com/live-static/live-room/images/gift-section/gift-$i.png" &
     sleep 0.1
-    wget "http://static.hdslb.com/live-static/live-room/images/gift-section/gift-$i.gif"
+    wget "http://static.hdslb.com/live-static/live-room/images/gift-section/gift-$i.gif" &
 
 done
 cd ..
@@ -104,7 +109,7 @@ i=0
 while [ $? -eq 0 ] ; do
     ((i++))
     sleep 0.1
-    wget "http://activity.hdslb.com/zzjs/cartoon/errorPage-manga-$i.png" 
+    wget "http://activity.hdslb.com/zzjs/cartoon/errorPage-manga-$i.png" &
 done
 cd ..
 }
@@ -114,6 +119,36 @@ merge_existing()
 # Wait for improvement
 echo "Not functional yet!"
 }
+
+case "$1" in
+    --mainpage-gif)
+	echo Downloading Mainpage Gifs ...
+    get_main_gif
+	exit 0
+    ;;
+    --live-presents)
+	echo Downloading Live Room Presents ...
+    get_live_presents
+	exit 0
+    ;;
+    --404)
+	echo Downloading 404 Mangas
+    get_404_manga
+	exit 0
+    ;;
+    *)
+      echo "This is a simple tool to download pictures from bilibili.com "
+      echo ""
+      echo "Usage:"
+      echo ""
+      echo "--mainpage-gif					Download main gifs"
+      echo "--live-presents					Download live room presents"
+      echo "--404							Download mangas"
+      echo ""
+      echo "e.g. ./get-tree2 -a -f"
+      exit 0
+    ;;
+esac
 
 #get_main_gif
 #get_live_presents

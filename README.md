@@ -11,6 +11,8 @@ Tested with Dash only!<br>
 Basic commands required : sed,wget,jq,echo,iconv <br>
 需要的基本命令 ：sed，wget，jq，echo，iconv
 <br>
+(计划加入curl支持，并加入错误中断）
+<br>
 
 ### END | 结语
 DO NOT USE IT WITH OUT CONTROL !!! It may do harm to bilibili's servers ! <br>
